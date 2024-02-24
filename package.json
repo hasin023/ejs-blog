@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "server": "nodemon server.js",
-    "style": "npx tailwindcss -i ./view/assets/css/input.css -o ./view/assets/css/output.css --watch"
+    "style": "npx tailwindcss -i ./views/assets/css/input.css -o ./dist/output.css --watch"
   },
   "keywords": [
     "EJS",
