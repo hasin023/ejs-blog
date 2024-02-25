@@ -1,8 +1,12 @@
 const express = require('express');
 const app = express();
-const authRouter = require('./Routes/authRoute');
+// const authRouter = require('./Routes/authRoute');
+const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+
+// Middleware
+app.use(cors());
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
