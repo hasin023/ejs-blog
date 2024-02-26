@@ -3,10 +3,9 @@ const bodyParser = require('body-parser')
 const app = express();
 const cors = require('cors');
 const path = require('path');
-// const fs = require('fs');
 const session = require('express-session');
-const flash = require('express-flash');
 const cookieParser = require('cookie-parser');
+// const fs = require('fs');
 
 // Port
 const PORT = process.env.PORT || 3000;
@@ -27,9 +26,6 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// Flash
-app.use(flash());
-
 // Set Views
 app.set('views', './views');
 app.set('view engine', 'ejs');
@@ -42,13 +38,10 @@ app.use('/', authRouter)
 //     app.use('/', require(path.join(__dirname, '/Routes', file).replace('.js', '')));
 // });
 
-app.get('/login', (req, res) => {
-    return res.render('dashboard/login.ejs', {
-        title: 'Login',
-        user: {
-            email: 'asdf@gmail.com',
-            password: 'holysmokes'
-        }
+app.get('/dashboard', (req, res) => {
+    return res.render('home/dashboard.ejs', {
+        title: 'Dashboard',
+        user: {}
     });
 });
 

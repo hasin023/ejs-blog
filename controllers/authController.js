@@ -13,6 +13,13 @@ class AuthController {
         });
     }
 
+    loginPage = (req, res) => {
+        return res.render('dashboard/login.ejs', {
+            title: 'Login',
+            error: ''
+        });
+    }
+
     registerUser = async (req, res) => {
         const form = new formidable.IncomingForm();
 
@@ -60,8 +67,67 @@ class AuthController {
                 error: error
             });
         }
-
     };
+
+
+    loginUser = async (req, res) => {
+        const form = new formidable.IncomingForm();
+
+        try {
+            const { fields } = await new Promise((resolve, reject) => {
+                form.parse(req, (err, fields) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve({ fields });
+                    }
+                });
+            });
+
+            const { email, password } = fields;
+            const stringPassword = String(password);
+
+            const userQuery = `SELECT * FROM users WHERE email = '${email}'`;
+            const userResult = await pool.query(userQuery);
+            const user = userResult.rows[0];
+
+            if (!user) {
+                return res.status(400).render('dashboard/login', {
+                    title: 'Login',
+                    error: 'User not found'
+                });
+            }
+
+            const passwordMatch = await bcrypt.compare(stringPassword, user.password);
+
+            if (!passwordMatch) {
+                return res.status(400).render('dashboard/login', {
+                    title: 'Login',
+                    error: 'Invalid password'
+                });
+            }
+
+            const userSession = {
+                id: user.user_id,
+                email: user.email,
+                img_url: user.img_url
+            };
+
+            req.session.user = userSession;
+            return res.status(200).render('home/dashboard.ejs', {
+                title: 'Dashboard',
+                user: userSession
+            });
+
+        } catch (error) {
+            return res.status(500).render('dashboard/error.ejs', {
+                title: 'Error',
+                message: 'Internal server error',
+                error: error
+            });
+        }
+    };
+
 
 
 
