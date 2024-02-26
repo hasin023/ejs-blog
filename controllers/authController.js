@@ -69,6 +69,7 @@ class AuthController {
 
         } catch (error) {
             return res.status(500).render('dashboard/error.ejs', {
+                status: 500,
                 title: 'Error',
                 message: 'Internal server error',
                 error: error
@@ -116,28 +117,15 @@ class AuthController {
 
             return res.status(200).redirect('/dashboard');
 
-            // const userSession = {
-            //     user_id: user.user_id,
-            //     email: user.email,
-            //     img_url: user.img_url
-            // };
-
-            // return res.status(200).render('home/dashboard.ejs', {
-            //     title: 'Dashboard',
-            //     user: userSession
-            // });
-
-
         } catch (error) {
             return res.status(500).render('dashboard/error.ejs', {
+                status: 500,
                 title: 'Error',
                 message: 'Internal server error',
                 error: error
             });
         }
     };
-
-
 
 
 }
