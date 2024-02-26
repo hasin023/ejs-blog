@@ -1,6 +1,8 @@
 const formidable = require('formidable');
 const pool = require('../config/db');
 const fs = require('fs').promises;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 class AuthController {
@@ -27,7 +29,9 @@ class AuthController {
 
             const { email, password } = fields;
             const { image } = files;
+            const stringPassword = String(password);
 
+            const hashedPassword = await bcrypt.hash(stringPassword, saltRounds);
             let imageNewName = Date.now() + image[0].originalFilename;
 
             const emailCheckQuery = `SELECT COUNT(*) AS count FROM users WHERE email = '${email}'`;
@@ -41,7 +45,7 @@ class AuthController {
                 });
             }
 
-            const insertQuery = `INSERT INTO users (email, password, img_url) VALUES ('${email}', '${password}', '${imageNewName}')`;
+            const insertQuery = `INSERT INTO users (email, password, img_url) VALUES ('${email}', '${hashedPassword}', '${imageNewName}')`;
             await pool.query(insertQuery);
 
             const disPath = `${__dirname}/../views/assets/images/${imageNewName}`;
