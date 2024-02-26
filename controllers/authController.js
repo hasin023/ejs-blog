@@ -3,6 +3,7 @@ const pool = require('../config/db');
 const fs = require('fs').promises;
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 
 
 class AuthController {
@@ -14,10 +15,16 @@ class AuthController {
     }
 
     loginPage = (req, res) => {
-        return res.render('dashboard/login.ejs', {
-            title: 'Login',
-            error: ''
-        });
+        const { crudToken } = req.cookies;
+        if (crudToken) {
+            return res.status(200).redirect('/dashboard');
+        } else {
+
+            return res.render('dashboard/login.ejs', {
+                title: 'Login',
+                error: ''
+            });
+        }
     }
 
     registerUser = async (req, res) => {
@@ -71,20 +78,8 @@ class AuthController {
 
 
     loginUser = async (req, res) => {
-        const form = new formidable.IncomingForm();
-
         try {
-            const { fields } = await new Promise((resolve, reject) => {
-                form.parse(req, (err, fields) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve({ fields });
-                    }
-                });
-            });
-
-            const { email, password } = fields;
+            const { email, password } = req.body;
             const stringPassword = String(password);
 
             const userQuery = `SELECT * FROM users WHERE email = '${email}'`;
@@ -107,17 +102,31 @@ class AuthController {
                 });
             }
 
-            const userSession = {
+            const token = jwt.sign({
                 id: user.user_id,
                 email: user.email,
                 img_url: user.img_url
-            };
-
-            req.session.user = userSession;
-            return res.status(200).render('home/dashboard.ejs', {
-                title: 'Dashboard',
-                user: userSession
+            }, 'randomsecret', {
+                expiresIn: '2d'
             });
+
+            res.cookie('crudToken', token, {
+                expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+            });
+
+            return res.status(200).redirect('/dashboard');
+
+            // const userSession = {
+            //     user_id: user.user_id,
+            //     email: user.email,
+            //     img_url: user.img_url
+            // };
+
+            // return res.status(200).render('home/dashboard.ejs', {
+            //     title: 'Dashboard',
+            //     user: userSession
+            // });
+
 
         } catch (error) {
             return res.status(500).render('dashboard/error.ejs', {

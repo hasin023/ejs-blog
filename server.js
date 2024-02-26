@@ -12,10 +12,11 @@ const PORT = process.env.PORT || 3000;
 
 // Routes
 const authRouter = require('./Routes/authRoute');
+const dashboardRouter = require('./Routes/dashboardRoute');
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cookieParser());
 
@@ -33,17 +34,18 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'views')));
 app.use('/', authRouter)
+app.use('/', dashboardRouter)
 
 // fs.readdirSync(`${__dirname}/Routes`).map((file) => {
 //     app.use('/', require(path.join(__dirname, '/Routes', file).replace('.js', '')));
 // });
 
-app.get('/dashboard', (req, res) => {
-    return res.render('home/dashboard.ejs', {
-        title: 'Dashboard',
-        user: {}
-    });
-});
+// app.get('/dashboard', (req, res) => {
+//     return res.render('dashboard/index.ejs', {
+//         title: 'Dashboard',
+//         user: {}
+//     });
+// });
 
 
 app.listen(PORT, () => {
