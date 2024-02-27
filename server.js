@@ -1,13 +1,14 @@
+require('dotenv').config()
 const express = require('express');
-const bodyParser = require('body-parser')
 const app = express();
+const bodyParser = require('body-parser')
 const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
 // PORT
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.APP_PORT || 3000;
 
 // Routes
 const authRouter = require('./Routes/authRoute');
@@ -18,7 +19,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cookieParser());
-
 // Session
 app.use(session({
     secret: 'randomsecret2345voice55',
@@ -39,9 +39,11 @@ app.use(express.static(path.join(__dirname, 'views')));
 app.use('/', authRouter)
 app.use('/', dashboardRouter)
 
-// app.get('/', (req, res) => {
-//     return res.render('index.ejs');
-// });
+app.get('/', (req, res) => {
+    return res.render('root.ejs', {
+        title: 'Root'
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);

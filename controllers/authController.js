@@ -7,7 +7,8 @@ const jwt = require('jsonwebtoken');
 
 
 class AuthController {
-    registerPage = (req, res) => {
+
+    renderRegisterPage = (req, res) => {
         const { crudToken } = req.cookies;
         if (crudToken) {
             return res.status(200).redirect('/dashboard');
@@ -19,7 +20,8 @@ class AuthController {
         }
     }
 
-    loginPage = (req, res) => {
+
+    renderLoginPage = (req, res) => {
         const { crudToken } = req.cookies;
         if (crudToken) {
             return res.status(200).redirect('/dashboard');
@@ -31,6 +33,7 @@ class AuthController {
             });
         }
     }
+
 
     registerUser = async (req, res) => {
         const form = new formidable.IncomingForm();
