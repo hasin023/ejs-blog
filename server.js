@@ -5,7 +5,6 @@ const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-// const fs = require('fs');
 
 // PORT
 const PORT = process.env.PORT || 3000;
@@ -39,10 +38,6 @@ app.use(express.static(path.join(__dirname, 'views')));
 // Use Routes
 app.use('/', authRouter)
 app.use('/', dashboardRouter)
-
-// fs.readdirSync(`${__dirname}/Routes`).map((file) => {
-//     app.use('/', require(path.join(__dirname, '/Routes', file).replace('.js', '')));
-// });
 
 // app.get('/', (req, res) => {
 //     return res.render('index.ejs');

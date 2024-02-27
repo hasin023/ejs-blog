@@ -8,10 +8,15 @@ const jwt = require('jsonwebtoken');
 
 class AuthController {
     registerPage = (req, res) => {
-        return res.render('dashboard/register.ejs', {
-            title: 'Register',
-            error: ''
-        });
+        const { crudToken } = req.cookies;
+        if (crudToken) {
+            return res.status(200).redirect('/dashboard');
+        } else {
+            return res.render('dashboard/register.ejs', {
+                title: 'Register',
+                error: ''
+            });
+        }
     }
 
     loginPage = (req, res) => {
@@ -126,6 +131,12 @@ class AuthController {
             });
         }
     };
+
+
+    logoutUser = (req, res) => {
+        res.clearCookie('crudToken');
+        return res.status(200).redirect('/login');
+    }
 
 
 }
