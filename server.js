@@ -7,7 +7,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 // const fs = require('fs');
 
-// Port
+// PORT
 const PORT = process.env.PORT || 3000;
 
 // Routes
@@ -30,9 +30,13 @@ app.use(session({
 // Set Views
 app.set('views', './views');
 app.set('view engine', 'ejs');
+
+// Static Files
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'views')));
+
+// Use Routes
 app.use('/', authRouter)
 app.use('/', dashboardRouter)
 
@@ -40,13 +44,9 @@ app.use('/', dashboardRouter)
 //     app.use('/', require(path.join(__dirname, '/Routes', file).replace('.js', '')));
 // });
 
-// app.get('/dashboard', (req, res) => {
-//     return res.render('dashboard/index.ejs', {
-//         title: 'Dashboard',
-//         user: {}
-//     });
+// app.get('/', (req, res) => {
+//     return res.render('index.ejs');
 // });
-
 
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
